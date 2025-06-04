@@ -4,7 +4,7 @@ import RightSidebar from '@/components/shared/RightSidebar'
 import Topbar from '@/components/shared/Topbar'
 import { ClerkProvider } from '@clerk/nextjs'
 import { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+// import { Inter } from 'next/font/google'
 import { ReactNode } from 'react'
 
 export const metadata: Metadata = {
@@ -12,16 +12,18 @@ export const metadata: Metadata = {
   description: 'Shared social media platform',
 }
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-})
+// const inter = Inter({
+//   subsets: ['latin'],
+//   variable: '--font-inter',
+// })
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <ClerkProvider>
       <html>
-        <body className={`${inter.className} ${inter.variable}`}>
+        <body
+        // className={`${inter.className} ${inter.variable}`}
+        >
           <Topbar />
           <main className='flex flex-row'>
             <LeftSidebar />

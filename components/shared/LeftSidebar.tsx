@@ -19,8 +19,11 @@ const LeftSidebar = () => {
               href={item.route}
               key={index}
               className={cn(
-                pathname.includes(item.route) ? 'bg-primary-500' : '',
-                'text-light-1 flex items-center  gap-4 rounded-lg p-4'
+                pathname === item.route ||
+                  (pathname.startsWith(item.route) && item.route !== '/')
+                  ? 'bg-primary-500'
+                  : '',
+                'text-light-1 flex items-center gap-4 rounded-lg p-4'
               )}
             >
               <Image
