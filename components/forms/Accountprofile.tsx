@@ -18,6 +18,8 @@ import Image from 'next/image'
 import { Textarea } from '@/components/ui/textarea'
 import { isBase64Image } from '@/lib/utils'
 import { useUploadThing } from '@/lib/uploadthing'
+import CreateOrUpdateUser from '@/lib/actions/user.action'
+import { usePathname, useRouter } from 'next/navigation'
 
 type AccountprofileProps = {
   user: {
@@ -34,6 +36,8 @@ type AccountprofileProps = {
 const Accountprofile = ({ user, btnTitle }: AccountprofileProps) => {
   const [file, setfile] = useState<File[]>([])
   const { startUpload } = useUploadThing('media')
+  const pathname = usePathname()
+  const router = useRouter()
   const form = useForm<IuserValidation>({
     resolver: zodResolver(Uservalidation),
     defaultValues: {
@@ -75,7 +79,26 @@ const Accountprofile = ({ user, btnTitle }: AccountprofileProps) => {
     } else {
       console.log('No file selected for upload or invalid format')
     }
-    console.log('value', value)
+    try {
+      const res = await CreateOrUpdateUser({
+        ...value,
+        profileimage: value.profileimage ?? '',
+        userId: user.id,
+        pathname: pathname,
+      })
+      if (res.success) {
+        console.log(res.message)
+        if (pathname === '/profile/edit') {
+          router.back()
+        } else {
+          router.push('/')
+        }
+      } else {
+        console.error('Failed to update user profile:', res.message)
+      }
+    } catch (error) {
+      console.error('Error updating user profile:', error)
+    }
   }
   return (
     <div>
@@ -98,7 +121,7 @@ const Accountprofile = ({ user, btnTitle }: AccountprofileProps) => {
                       width={96}
                       height={96}
                       priority
-                      className='rounded-full object-contain'
+                      className='rounded-full object-cover h-full w-full'
                     />
                   ) : (
                     <Image
