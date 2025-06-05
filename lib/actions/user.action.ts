@@ -62,3 +62,19 @@ export async function fetchUserById(userId: string) {
     throw new Error('Failed to fetch user by ID')
   }
 }
+
+export async function fetchUser(userId: string) {
+  try {
+    await connectDB()
+    const user = await User.findOne({
+      _id: userId,
+    })
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(user)),
+      message: 'User fetched successfully',
+    }
+  } catch (error) {
+    throw new Error('Failed to fetch user by ID')
+  }
+}

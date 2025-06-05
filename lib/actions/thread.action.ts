@@ -56,7 +56,9 @@ export async function fetchpost({
   const skip = (page - 1) * limit
   try {
     await connectDB()
-    const threads = await Thread.find({ parentId: { $in: [null, undefined] } })
+    const threads = await Thread.find({
+      parentId: { $in: [null, undefined] },
+    })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -115,6 +117,43 @@ export async function fetchThreadById(id: string) {
     return {
       success: false,
       message: 'Failed to fetch thread',
+    }
+  }
+}
+
+export async function addCommentThread({
+  userid,
+  comment,
+  threadid,
+  path,
+}: {
+  userid: string
+  comment: string
+  threadid: string
+  path?: string
+}) {
+  try {
+    await connectDB()
+    const thread = await Thread.findById(threadid)
+    if (!thread) {
+      throw new Error('Thread not found')
+    }
+    const newThread = await Thread.create({
+      text: comment,
+      author: userid,
+      parentId: threadid,
+    })
+    thread.children.push(newThread._id)
+    await thread.save()
+    return {
+      success: true,
+      message: 'Comment added successfully',
+    }
+  } catch (error: any) {
+    console.error('Error adding comment:', error)
+    return {
+      success: false,
+      message: 'Failed to add comment',
     }
   }
 }
