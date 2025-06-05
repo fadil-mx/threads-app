@@ -11,6 +11,7 @@ type ThreadCardProps = {
   createdAt: Date
   author: {
     _id: string
+    id?: string
     name: string
     username: string
     profileimage: string
@@ -48,10 +49,7 @@ const ThreadCard = ({
       <div className='flex items-start justify-between'>
         <div className='flex w-full flex-1 flex-row gap-4 '>
           <div className='flex flex-col items-center'>
-            <Link
-              href={`/profile/${author._id}`}
-              className='relative h-11 w-11'
-            >
+            <Link href={`/profile/${author.id}`} className='relative h-11 w-11'>
               <Image
                 src={author.profileimage}
                 alt='user_community_image'
@@ -63,7 +61,7 @@ const ThreadCard = ({
             <div className=' relative mt-2 w-0.5 grow rounded-full bg-neutral-800' />
           </div>
           <div className='flex w-full flex-col'>
-            <Link href={`/profile/${author._id}`} className='w-fit'>
+            <Link href={`/profile/${author.id}`} className='w-fit'>
               <h4 className='cursor-pointer font-semibold text-light-1'>
                 {author.name}
               </h4>

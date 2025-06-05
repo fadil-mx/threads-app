@@ -6,6 +6,7 @@ import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { profileTabs } from '@/lib/constants'
 import Image from 'next/image'
+import ThreadsTab from '@/components/shared/ThreadsTab'
 
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const Params = await params
@@ -63,7 +64,11 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
               value={tab.value}
               className='w-full text-light-1'
             >
-              <p className=''>dasdas</p>
+              <ThreadsTab
+                userId={userinfo?.data?.id}
+                accountId={userinfo?.data?._id}
+                accountType='user'
+              />
             </TabsContent>
           ))}
         </Tabs>

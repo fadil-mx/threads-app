@@ -4,6 +4,7 @@
 import { revalidatePath } from 'next/cache'
 import connectDB from '../db'
 import User from '../db/models/userschema'
+import Thread from '../db/models/Treadschema'
 
 export default async function CreateOrUpdateUser({
   userId,
@@ -67,7 +68,7 @@ export async function fetchUser(userId: string) {
   try {
     await connectDB()
     const user = await User.findOne({
-      _id: userId,
+      id: userId,
     })
     return {
       success: true,
@@ -76,5 +77,30 @@ export async function fetchUser(userId: string) {
     }
   } catch (error) {
     throw new Error('Failed to fetch user by ID')
+  }
+}
+
+export async function fetchUserPost(userId: string) {
+  try {
+    const user = await User.findOne({ id: userId }).populate({
+      path: 'threads',
+      model: Thread,
+      populate: {
+        path: 'children',
+        model: Thread,
+        populate: {
+          path: 'author',
+          model: User,
+          select: 'name id profileimage',
+        },
+      },
+    })
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(user)),
+      message: 'User posts fetched successfully',
+    }
+  } catch (error) {
+    throw new Error('Failed to fetch user posts')
   }
 }

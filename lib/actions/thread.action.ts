@@ -62,7 +62,7 @@ export async function fetchpost({
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('author', 'username name profileimage')
+      .populate('author', 'username id name profileimage')
       .populate({
         path: 'children',
         populate: { path: 'author', select: '_id name parentId image' },

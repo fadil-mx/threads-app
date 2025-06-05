@@ -4,12 +4,13 @@ import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { SignedIn, SignOutButton } from '@clerk/nextjs'
+import { SignedIn, SignOutButton, useAuth } from '@clerk/nextjs'
 
 import React from 'react'
 
 const LeftSidebar = () => {
   const pathname = usePathname()
+  const { userId } = useAuth()
   return (
     <div className=' sticky left-0 top-0 z-20 flex h-screen w-fit flex-col justify-between overflow-auto border-r border-r-dark-4 bg-dark-2 pb-5 pt-24  max-sm:hidden '>
       <div className='flex flex-col flex-1 w-full px-4 '>
@@ -36,6 +37,20 @@ const LeftSidebar = () => {
             </Link>
           )
         })}
+        <div className=' '>
+          <Link
+            href={`/profile/${userId}`}
+            className={cn(
+              pathname === '/profile' || pathname.startsWith('/profile')
+                ? 'bg-primary-500'
+                : '',
+              'text-light-1 flex items-center gap-4 rounded-lg p-4'
+            )}
+          >
+            <Image src='/assets/user.svg' alt='user' width={24} height={24} />
+            <p className='block max-md:hidden'>profile</p>
+          </Link>
+        </div>
       </div>
       <div className='px-6 '>
         <SignedIn>
