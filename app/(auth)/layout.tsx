@@ -16,8 +16,10 @@ const inter = Inter({
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html>
-      <body className={`${inter.className}`}>
-        <ClerkProvider>{children} </ClerkProvider>
+      <body className={`${inter.className} bg-black`}>
+        <div className='w-full flex justify-center items-center min-h-screen'>
+          <ClerkProvider>{children} </ClerkProvider>
+        </div>
       </body>
     </html>
   )
