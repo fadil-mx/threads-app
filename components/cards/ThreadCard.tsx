@@ -1,4 +1,4 @@
-import { cn } from '@/lib/utils'
+import { cn, formatDateString } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
@@ -33,9 +33,9 @@ const ThreadCard = ({
   // currentUserId,
   // parrentId,
   content,
-  // createdAt,
+  createdAt,
   author,
-  // community,
+  community,
   comments,
   iscomment,
 }: ThreadCardProps) => {
@@ -111,6 +111,23 @@ const ThreadCard = ({
           </div>
         </div>
       </div>
+      {!iscomment && community && (
+        <Link
+          href={`/community/${community.id}`}
+          className='mt-5 flex items-center'
+        >
+          <p className='text-gray-1 text-sm'>
+            {formatDateString(createdAt)} - {community.name} Community
+          </p>
+          <Image
+            src={community.image}
+            alt='community_image'
+            width={14}
+            height={14}
+            className='ml-1 rounded-full object-cover'
+          />
+        </Link>
+      )}
     </div>
   )
 }

@@ -16,6 +16,7 @@ import { useForm } from 'react-hook-form'
 import { Textarea } from '@/components/ui/textarea'
 import { createThread } from '@/lib/actions/thread.action'
 import { usePathname, useRouter } from 'next/navigation'
+import { useOrganization } from '@clerk/nextjs'
 
 type Props = {
   userId: string
@@ -24,6 +25,9 @@ type Props = {
 const PostThread = ({ userId }: Props) => {
   const pathname = usePathname()
   const router = useRouter()
+  const { organization } = useOrganization()
+  // console.log(organization)
+
   const form = useForm<IthreadValidator>({
     resolver: zodResolver(threadValidator),
     defaultValues: {
@@ -34,10 +38,11 @@ const PostThread = ({ userId }: Props) => {
 
   const onSubmit = async (value: IthreadValidator) => {
     console.log('value', value)
+
     const res = await createThread({
       text: value.thread,
       author: userId,
-      community: null,
+      community: organization ? organization.id : null,
       path: pathname,
     })
     if (!res.success) {

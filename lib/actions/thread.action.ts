@@ -7,6 +7,7 @@ import connectDB from '../db'
 import Thread from '../db/models/Treadschema'
 import User from '../db/models/userschema'
 import { PAGE_SIZE } from '../constants'
+import Community from '../db/models/communitySchema'
 
 export async function createThread({
   text,
@@ -21,15 +22,23 @@ export async function createThread({
 }) {
   try {
     await connectDB()
+    const communityid = await Community.findOne({ id: community })
     const thread = await Thread.create({
       text,
       author,
-      community: null,
+      community: communityid ? communityid._id : null,
     })
 
     await User.findByIdAndUpdate(author, {
       $push: { threads: thread._id },
     })
+
+    if (communityid) {
+      // Update Community model
+      await Community.findByIdAndUpdate(communityid._id, {
+        $push: { threads: thread._id },
+      })
+    }
 
     revalidatePath(path ?? '/')
 
@@ -40,7 +49,7 @@ export async function createThread({
   } catch (error: any) {
     return {
       success: false,
-      message: 'Failed to create thread',
+      message: error.message || 'Failed to create thread',
     }
   }
 }
@@ -62,11 +71,23 @@ export async function fetchpost({
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
-      .populate('author', 'username id name profileimage')
       .populate({
-        path: 'children',
-        populate: { path: 'author', select: '_id name parentId image' },
+        path: 'author',
+        model: User,
       })
+      .populate({
+        path: 'community',
+        model: Community,
+      })
+      .populate({
+        path: 'children', // Populate the children field
+        populate: {
+          path: 'author', // Populate the author field within children
+          model: User,
+          select: '_id name parentId image', // Select only _id and username fields of the author
+        },
+      })
+
     const totalThreads = await Thread.countDocuments({
       parentId: { $in: [null, undefined] },
     })
