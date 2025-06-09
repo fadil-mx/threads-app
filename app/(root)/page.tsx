@@ -7,7 +7,7 @@ import React from 'react'
 
 const Homepage = async () => {
   const threads = await fetchpost({ page: 1 })
-  // console.log('threads', threads)
+  console.log('threads', threads)
   const user = await currentUser()
 
   return (

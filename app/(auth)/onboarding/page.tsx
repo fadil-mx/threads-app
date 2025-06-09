@@ -1,27 +1,32 @@
 import Accountprofile from '@/components/forms/Accountprofile'
+import { fetchUser } from '@/lib/actions/user.action'
 import { currentUser } from '@clerk/nextjs/server'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
 const page = async () => {
   const user = await currentUser()
 
-  type UserInfo = {
-    _id?: string
-    username?: string
-    name?: string
-    bio?: string
-    image?: string
-  }
+  // type UserInfo = {
+  //   _id?: string
+  //   username?: string
+  //   name?: string
+  //   bio?: string
+  //   image?: string
+  // }
 
-  const userinfo: UserInfo = {}
+  const userinfo = await fetchUser(user?.id || '')
+  if (userinfo?.data?.onboarded) {
+    redirect('/')
+  }
 
   const userData = {
     id: user?.id || '',
-    objectid: userinfo?._id || '',
-    username: userinfo?.username || user?.firstName || '',
-    name: userinfo?.name || user?.fullName || '',
-    bio: userinfo?.bio || '',
-    image: userinfo?.image || user?.imageUrl || '',
+    objectid: userinfo?.data._id || '',
+    username: userinfo?.data.username || user?.firstName || '',
+    name: userinfo?.data.name || user?.fullName || '',
+    bio: userinfo?.data.bio || '',
+    image: userinfo?.data.image || user?.imageUrl || '',
   }
   return (
     <div className='bg-black min-h-screen '>

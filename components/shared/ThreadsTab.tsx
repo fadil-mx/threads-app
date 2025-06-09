@@ -2,22 +2,30 @@
 import { fetchUserPost } from '@/lib/actions/user.action'
 import React from 'react'
 import ThreadCard from '../cards/ThreadCard'
+import { fetchCommunityPosts } from '@/lib/actions/community.actions'
 
 type ThreadsTabProps = {
   userId: string
   accountId: string
   accountType: string
 }
+
 const ThreadsTab = async ({
   userId,
-  // accountId,
+  accountId,
   accountType,
 }: ThreadsTabProps) => {
-  const result = await fetchUserPost(userId)
-  console.log('result', result)
+  let result
+  if (accountType === 'community') {
+    result = await fetchCommunityPosts(accountId)
+    // console.log('result', result)
+  } else {
+    result = await fetchUserPost(userId)
+  }
+  // console.log('result', result)
 
   return (
-    <div className='mt-9 flex flex-col gap-10'>
+    <div className=' flex flex-col gap-4'>
       {result?.data?.threads.map((thread: any) => (
         <ThreadCard
           key={thread._id}
@@ -43,7 +51,7 @@ const ThreadsTab = async ({
                 }
           }
           createdAt={thread.createdAt}
-          community={thread.community}
+          community={thread.communities}
           comments={thread.children || []}
         />
       ))}

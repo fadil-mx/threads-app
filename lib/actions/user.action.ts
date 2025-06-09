@@ -7,6 +7,7 @@ import User from '../db/models/userschema'
 import Thread from '../db/models/Treadschema'
 import { PAGE_SIZE } from '../constants'
 import { FilterQuery } from 'mongoose'
+import Community from '../db/models/communitySchema'
 
 export default async function CreateOrUpdateUser({
   userId,
@@ -84,19 +85,31 @@ export async function fetchUser(userId: string) {
 
 export async function fetchUserPost(userId: string) {
   try {
-    const user = await User.findOne({ id: userId }).populate({
-      path: 'threads',
-      model: Thread,
-      populate: {
-        path: 'children',
-        model: Thread,
-        populate: {
-          path: 'author',
-          model: User,
-          select: 'name id profileimage',
-        },
+    const user = await User.findOne({ id: userId }).populate([
+      {
+        path: 'communities',
+        model: Community,
       },
-    })
+      {
+        path: 'threads',
+        model: Thread,
+        populate: [
+          {
+            path: 'author',
+            model: User,
+          },
+          {
+            path: 'children',
+            model: Thread,
+            populate: {
+              path: 'author',
+              model: User,
+              select: 'name id profileimage',
+            },
+          },
+        ],
+      },
+    ])
     return {
       success: true,
       data: JSON.parse(JSON.stringify(user)),

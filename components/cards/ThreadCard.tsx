@@ -100,7 +100,7 @@ const ThreadCard = ({
                   className='cursor-pointer object-contain'
                 />
               </div>
-              {iscomment && comments && comments.length > 0 && (
+              {!iscomment && comments && comments.length > 0 && (
                 <Link href={`/thread/${id}`}>
                   <p className='mt-1 text-sm text-gray-1'>
                     {comments.length}replies
@@ -113,7 +113,7 @@ const ThreadCard = ({
       </div>
       {!iscomment && community && (
         <Link
-          href={`/community/${community.id}`}
+          href={`/communities/${community.id}`}
           className='mt-5 flex items-center'
         >
           <p className='text-gray-1 text-sm'>

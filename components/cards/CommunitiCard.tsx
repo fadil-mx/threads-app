@@ -1,0 +1,81 @@
+import Image from 'next/image'
+import React from 'react'
+import { buttonVariants } from '../ui/button'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
+
+type Props = {
+  id: string
+  username: string
+  name: string
+  image: string
+  bio?: string
+  members: {
+    id: string
+    username: string
+    name: string
+    profileimage: string
+  }[]
+}
+
+const CommunitiCard = ({ id, username, name, image, bio, members }: Props) => {
+  return (
+    <div className=' w-full rounded-lg bg-dark-2 px-4 py-5 sm:w-96'>
+      <div className='flex flex-col'>
+        <div className='flex items-center gap-3'>
+          <Link href={`/communities/${id}`}>
+            <Image
+              src={image}
+              alt={name}
+              width={40}
+              height={40}
+              className=' rounded-full object-cover'
+            />
+          </Link>
+          <div className='flex flex-col'>
+            <p className='text-base font-bold text-light-1'>{name}</p>
+            <p className='text-sm text-gray-1'>@{username}</p>
+          </div>
+        </div>
+        <p className='text-light-2 mt-3  text-sm'>{bio}</p>
+        <div className='mt-3 flex justify-between  '>
+          <Link
+            className={cn(
+              buttonVariants({
+                variant: 'default',
+                size: 'sm',
+                className: 'bg-primary-500',
+              })
+            )}
+            href={`/communities/${id}`}
+          >
+            View
+          </Link>
+          {members.length > 0 && (
+            <div className='flex items-center'>
+              {members.map((member, index) => (
+                <Image
+                  key={index}
+                  src={member.profileimage}
+                  alt={`user_${index}`}
+                  width={28}
+                  height={28}
+                  className={`${
+                    index !== 0 && '-ml-2'
+                  } rounded-full object-cover`}
+                />
+              ))}
+              {members.length > 3 && (
+                <p className='ml-1 text-subtle-medium text-gray-1'>
+                  {members.length}+ Users
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default CommunitiCard

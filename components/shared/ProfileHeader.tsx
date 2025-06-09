@@ -8,6 +8,7 @@ type Props = {
   image: string
   bio: string
   username?: string
+  type?: 'user' | 'community'
 }
 
 const ProfileHeader = ({
@@ -17,7 +18,8 @@ const ProfileHeader = ({
   username,
   image,
   bio,
-}: Props) => {
+}: // type,
+Props) => {
   return (
     <div className='fex w-full flex-col justify-start'>
       <div className='flex items-center justify-between'>
