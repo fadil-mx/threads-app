@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ProfileHeader from '@/components/shared/ProfileHeader'
-import { fetchUser } from '@/lib/actions/user.action'
+import { fetchUser, getActivity } from '@/lib/actions/user.action'
 import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
 import React from 'react'
@@ -7,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { profileTabs } from '@/lib/constants'
 import Image from 'next/image'
 import ThreadsTab from '@/components/shared/ThreadsTab'
+import ThreadCard from '@/components/cards/ThreadCard'
 
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const Params = await params
@@ -21,6 +23,9 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   if (!userinfo?.data?.onboarded) {
     redirect('/onboarding')
   }
+
+  const replays = await getActivity(userinfo.data._id)
+  // console.log('replays', replays)
   return (
     <>
       <div className=''>
@@ -58,19 +63,41 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
               </TabsTrigger>
             ))}
           </TabsList>
-          {profileTabs.map((tab) => (
-            <TabsContent
-              key={tab.label}
-              value={tab.value}
-              className='w-full text-light-1'
-            >
-              <ThreadsTab
-                userId={userinfo?.data?.id}
-                accountId={userinfo?.data?.id}
-                accountType='user'
-              />
-            </TabsContent>
-          ))}
+          <TabsContent value='threads' className='w-full text-light-1'>
+            <ThreadsTab
+              userId={userinfo?.data?.id}
+              accountId={userinfo?.data?.id}
+              accountType='user'
+            />
+          </TabsContent>
+          <TabsContent value='replies' className='w-full text-light-1'>
+            {replays?.data?.length > 0 ? (
+              <div className=''>
+                {replays?.data?.map((thread: any) => (
+                  <ThreadCard
+                    key={thread._id}
+                    id={thread._id}
+                    currentUserId={user?.id || ''}
+                    parrentId={thread.parentId || ''}
+                    content={thread.text}
+                    author={thread.author}
+                    createdAt={thread.createdAt}
+                    community={thread.community}
+                    comments={thread.children || []}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className=''>
+                <h1 className='text-2xl text-light-1'> No replies</h1>
+              </div>
+            )}
+          </TabsContent>
+          <TabsContent value='tagged' className='w-full text-light-1'>
+            <h1 className='text-light-1 w-full text-center text-2xl mt-8'>
+              Comming Soon.....
+            </h1>
+          </TabsContent>
         </Tabs>
       </div>
     </>

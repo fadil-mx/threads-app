@@ -178,7 +178,7 @@ export async function getActivity(id: string) {
     }).populate({
       path: 'author',
       model: User,
-      select: 'name _id profileimage',
+      select: 'name _id profileimage id',
     })
     return {
       success: true,

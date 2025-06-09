@@ -45,7 +45,7 @@ const page = async () => {
                     <span className='mr-1 text-primary-500'>
                       {item?.author.name}
                     </span>{' '}
-                    replaied to your thread{' '}
+                    replied to your thread{' '}
                   </p>
                 </div>
               </Link>

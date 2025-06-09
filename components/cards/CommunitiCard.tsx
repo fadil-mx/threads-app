@@ -37,13 +37,14 @@ const CommunitiCard = ({
         <div className=' flex items-center justify-between'>
           <div className='flex items-center gap-3'>
             <Link href={`/communities/${id}`}>
-              <Image
-                src={image}
-                alt={name}
-                width={40}
-                height={40}
-                className=' rounded-full object-cover'
-              />
+              <div className='relative h-10 w-10'>
+                <Image
+                  src={image}
+                  alt={name}
+                  fill
+                  className=' rounded-full object-cover'
+                />
+              </div>
             </Link>
             <div className='flex flex-col'>
               <p className='text-base font-bold text-light-1'>{name}</p>
