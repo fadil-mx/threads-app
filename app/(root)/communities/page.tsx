@@ -42,7 +42,14 @@ const page = async () => {
                 name={person.name}
                 image={person.image}
                 bio={person.bio}
-                members={person.members}
+                members={person.members.map((m: any) => ({
+                  id: m.id,
+                  username: m.username,
+                  name: m.name,
+                  profileimage: m.profileimage,
+                }))}
+                currentUserId={user.id}
+                communityId={person.id}
               />
             ))}
           </div>

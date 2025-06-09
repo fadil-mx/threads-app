@@ -3,6 +3,7 @@ import React from 'react'
 import { buttonVariants } from '../ui/button'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import CommunityJoin from '../shared/communityJoin'
 
 type Props = {
   id: string
@@ -10,32 +11,50 @@ type Props = {
   name: string
   image: string
   bio?: string
+  currentUserId?: string
   members: {
     id: string
     username: string
     name: string
     profileimage: string
   }[]
+  communityId?: string
 }
 
-const CommunitiCard = ({ id, username, name, image, bio, members }: Props) => {
+const CommunitiCard = ({
+  currentUserId,
+  id,
+  username,
+  name,
+  image,
+  bio,
+  members,
+  communityId,
+}: Props) => {
   return (
     <div className=' w-full rounded-lg bg-dark-2 px-4 py-5 sm:w-96'>
       <div className='flex flex-col'>
-        <div className='flex items-center gap-3'>
-          <Link href={`/communities/${id}`}>
-            <Image
-              src={image}
-              alt={name}
-              width={40}
-              height={40}
-              className=' rounded-full object-cover'
-            />
-          </Link>
-          <div className='flex flex-col'>
-            <p className='text-base font-bold text-light-1'>{name}</p>
-            <p className='text-sm text-gray-1'>@{username}</p>
+        <div className=' flex items-center justify-between'>
+          <div className='flex items-center gap-3'>
+            <Link href={`/communities/${id}`}>
+              <Image
+                src={image}
+                alt={name}
+                width={40}
+                height={40}
+                className=' rounded-full object-cover'
+              />
+            </Link>
+            <div className='flex flex-col'>
+              <p className='text-base font-bold text-light-1'>{name}</p>
+              <p className='text-sm text-gray-1'>@{username}</p>
+            </div>
           </div>
+          <CommunityJoin
+            userid={currentUserId}
+            communityid={communityId}
+            members={members}
+          />
         </div>
         <p className='text-light-2 mt-3  text-sm'>{bio}</p>
         <div className='mt-3 flex justify-between  '>
@@ -54,16 +73,16 @@ const CommunitiCard = ({ id, username, name, image, bio, members }: Props) => {
           {members.length > 0 && (
             <div className='flex items-center'>
               {members.map((member, index) => (
-                <Image
-                  key={index}
-                  src={member.profileimage}
-                  alt={`user_${index}`}
-                  width={28}
-                  height={28}
-                  className={`${
-                    index !== 0 && '-ml-2'
-                  } rounded-full object-cover`}
-                />
+                <div className='relative h-8 w-8' key={index}>
+                  <Image
+                    src={member.profileimage}
+                    alt={`user_${index}`}
+                    fill
+                    className={`${
+                      index !== 0 && '-ml-2'
+                    } rounded-full object-cover`}
+                  />
+                </div>
               ))}
               {members.length > 3 && (
                 <p className='ml-1 text-subtle-medium text-gray-1'>
